@@ -246,20 +246,20 @@
 		/* refcount = (64msec/total_row_sdram)*freq - 20 */
 	       st,sdram-refcount = < 761 >;
        };
-
-    bank3: stm32_nand {
-        reg = <0xA0000080 0x20>;
-        /* Baseaddr cmdaddr dataaddr*/
-        st,nand-ranges = /bits/ 32 <0x80000000 0x00010000 0x00020000>;
-        /*Nand flash configuretion from flash datasheet MT29F4G08ABADA*/
-        compatible = "micron,mt29f4g", "st,nand-flash";
-        st,nand-control = /bits/ 8 <FMC_PWAIT_DIS FMC_PWID_8 FMC_ECC_DIS 
-            FMC_TCLR_6 FMC_TAR_6 FMC_ECCPS_512>;
-        st,nand-timing = /bits/ 8 <MEMSET_VALE_2 MEMWAIT_VALE_4 MEMHOLD_VALE_2
-            MEMHIZ_VALE_2>;
-        u-boot,dm-pre-reloc;
-    };
 };
+
+//    bank3: stm32_nand@1 {
+//        reg = <0xA0000080 0x20>;
+        /* Baseaddr cmdaddr dataaddr*/
+//        st,nand-ranges = /bits/ 32 <0x80000000 0x00010000 0x00020000>;
+        /*Nand flash configuretion from flash datasheet MT29F4G08ABADA*/
+//        compatible = "micron,mt29f4g", "st,nand-flash";
+//        st,nand-control = /bits/ 8 <FMC_PWAIT_DIS FMC_PWID_8 FMC_ECC_DIS 
+//            FMC_TCLR_6 FMC_TAR_6 FMC_ECCPS_512>;
+//        st,nand-timing = /bits/ 8 <MEMSET_VALE_2 MEMWAIT_VALE_4 MEMHOLD_VALE_2
+ //           MEMHIZ_VALE_2>;
+ //       u-boot,dm-pre-reloc;
+ //   };
 
 &mac {
 	status = "okay";

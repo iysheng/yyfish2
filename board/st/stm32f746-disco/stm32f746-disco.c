@@ -20,10 +20,10 @@
 #include <asm/gpio.h>
 
 DECLARE_GLOBAL_DATA_PTR;
-
+/* yyfish 的 dram 初始化 */
 int dram_init(void)
 {
-#ifndef CONFIG_SUPPORT_SPL
+#ifdef CONFIG_SUPPORT_SPL
 	int rv;
 	struct udevice *dev;
 	rv = uclass_get_device(UCLASS_RAM, 0, &dev);
@@ -33,6 +33,7 @@ int dram_init(void)
 	}
 
 #endif
+	/* 获得 dram 的基地址和大小，保存到全局变量 gd 中 */
 	return fdtdec_setup_mem_size_base();
 }
 

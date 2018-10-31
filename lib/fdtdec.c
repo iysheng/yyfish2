@@ -1087,7 +1087,7 @@ int fdtdec_setup_mem_size_base(void)
 		debug("%s: Unable to decode first memory bank\n", __func__);
 		return -EINVAL;
 	}
-
+	/* 初始化 ram 的基地址和大小 */
 	gd->ram_size = (phys_size_t)(res.end - res.start + 1);
 	gd->ram_base = (unsigned long)res.start;
 	debug("%s: Initial DRAM size %llx\n", __func__,

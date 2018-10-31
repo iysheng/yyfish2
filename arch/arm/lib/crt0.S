@@ -66,10 +66,11 @@ ENTRY(_main)
 /*
  * Set up initial C runtime environment and call board_init_f(0).
  */
-
+/* 没有定义这两个宏，只是定义了宏 CONFIG_SUPPORT_SPL */
 #if defined(CONFIG_SPL_BUILD) && defined(CONFIG_SPL_STACK)
 	ldr	r0, =(CONFIG_SPL_STACK)
 #else
+	/* CONFIG_SYS_INIT_SP_ADDR = 0x20050000 */
 	ldr	r0, =(CONFIG_SYS_INIT_SP_ADDR)
 #endif
 	bic	r0, r0, #7	/* 8-byte alignment for ABI compliance */

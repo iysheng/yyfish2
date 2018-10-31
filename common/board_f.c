@@ -801,7 +801,7 @@ __weak int arch_cpu_init_dm(void)
 {
 	return 0;
 }
-
+/* 第一个执行的函数指针数组 */
 static const init_fnc_t init_sequence_f[] = {
 	setup_mon_len,
 #ifdef CONFIG_OF_CONTROL
@@ -947,7 +947,7 @@ static const init_fnc_t init_sequence_f[] = {
 #endif
 	NULL,
 };
-
+/* 初始化操作 */
 void board_init_f(ulong boot_flags)
 {
 	gd->flags = boot_flags;

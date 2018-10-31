@@ -51,10 +51,11 @@ typedef struct global_data {
 	unsigned long env_valid;	/* Environment valid? enum env_valid */
 	unsigned long env_has_init;	/* Bitmask of boolean of struct env_location offsets */
 	int env_load_prio;		/* Priority of the loaded environment */
-
+	/* sdram 的基地址 */
 	unsigned long ram_base;		/* Base address of RAM used by U-Boot */
 	unsigned long ram_top;		/* Top address of RAM used by U-Boot */
 	unsigned long relocaddr;	/* Start address of U-Boot in RAM */
+	/* sdram 的大小 */
 	phys_size_t ram_size;		/* RAM size */
 	unsigned long mon_len;		/* monitor len */
 	unsigned long irq_sp;		/* irq stack pointer */
