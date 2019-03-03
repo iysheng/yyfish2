@@ -49,6 +49,11 @@ config NAND_LPC32XX_SLC
 	help
 	  Enable the LPC32XX SLC NAND controller.
 
+config NAND_STM32
+	bool "Support LPC32F7X controller"
+	help
+	  Enable the STM32F7X NAND controller.
+
 config NAND_OMAP_GPMC
 	bool "Support OMAP GPMC NAND controller"
 	depends on ARCH_OMAP2PLUS

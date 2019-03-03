@@ -116,6 +116,8 @@ int _log(enum log_category_t cat, enum log_level_t level, const char *file,
 		      pr_fmt(_fmt), ##_args); \
 	})
 
+//#define DEBUG
+
 #ifdef DEBUG
 #define _DEBUG	1
 #else
@@ -150,7 +152,6 @@ int _log(enum log_category_t cat, enum log_level_t level, const char *file,
 	} while (0)
 
 #endif /* _DEBUG */
-
 /* Show a message if DEBUG is defined in a file */
 #define debug(fmt, args...)			\
 	debug_cond(_DEBUG, fmt, ##args)
