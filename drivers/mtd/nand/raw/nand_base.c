@@ -3697,7 +3697,7 @@ static bool find_full_id_nand(struct mtd_info *mtd, struct nand_chip *chip,
 	}
 	return false;
 }
-
+#define DEBUG
 /*
  * Get the flash and manufacturer id and lookup if the type is supported.
  */
@@ -3745,6 +3745,8 @@ struct nand_flash_dev *nand_get_flash_type(struct mtd_info *mtd,
 		return ERR_PTR(-ENODEV);
 	}
 
+		pr_info("YYS %s second ID read did not match %02x,%02x against %02x,%02x\n",
+			__func__, *maf_id, *dev_id, id_data[0], id_data[1]);
 	if (!type)
 		type = nand_flash_ids;
 
@@ -3937,7 +3939,7 @@ static int nand_dt_init(struct mtd_info *mtd, struct nand_chip *chip, int node)
 	return 0;
 }
 #endif /* CONFIG_IS_ENABLED(OF_CONTROL) */
-
+#define DEBUG
 /**
  * nand_scan_ident - [NAND Interface] Scan for the NAND device
  * @mtd: MTD device structure

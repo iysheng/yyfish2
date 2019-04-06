@@ -19,7 +19,7 @@ do_build() {
 	case $1 in
 		*config) make ARCH=$ARCH_PLATFORM CROSS_COMPILE=$CROSS_TOOLCHAIN menuconfig;;
 		default) make ARCH=$ARCH_PLATFORM CROSS_COMPILE=$CROSS_TOOLCHAIN ;;
-		openocd) sudo openocd -s /usr/local/share/openocd/scripts/board/ -f yyfish.cfg ;;
+		openocd) sudo openocd -s /usr/local/share/openocd/scripts/ -f board/yyfish.cfg ;;
 		telnet) telnet localhost 4444 ;;
 		*)usage ;;
 	esac
