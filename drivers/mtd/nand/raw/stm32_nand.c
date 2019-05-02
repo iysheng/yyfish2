@@ -1,4 +1,4 @@
-#define DEBUG
+//#define DEBUG
 #include <linux/mtd/rawnand.h>
 #include <asm/io.h>
 
@@ -27,9 +27,9 @@ static void stm32xx_nand_cmd_ctrl(struct mtd_info *mtd, int cmd, unsigned int ct
 		return;
 
 	if (ctrl & NAND_CLE)
-		writel(cmd & 0xFF, 0x80010000);
+		writeb(cmd & 0xFF, 0x80010000);
 	else if (ctrl & NAND_ALE)
-		writel(cmd & 0xFF, 0x80020000);
+		writeb(cmd & 0xFF, 0x80020000);
 }
 
 #if 0
@@ -41,7 +41,7 @@ static int stm32xx_nand_dev_ready(struct mtd_info *mtd)
 
 static uint8_t stm32xx_read_byte(struct mtd_info *mtd)
 {
-	return readl(0x80000000);
+	return readb(0x80000000);
 }
 
 static void stm32xx_write_byte(struct mtd_info *mtd, uint8_t byte)
@@ -52,7 +52,7 @@ static void stm32xx_write_byte(struct mtd_info *mtd, uint8_t byte)
 static void stm32xx_read_buf(struct mtd_info *mtd, uint8_t *buf, int len)
 {
 	while (len-- > 0)
-		*buf++ = readl(0x80000000);
+		*buf++ = readb(0x80000000);
 }
 
 static void stm32xx_write_buf(struct mtd_info *mtd, const uint8_t *buf, int len)

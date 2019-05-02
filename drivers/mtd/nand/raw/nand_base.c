@@ -3738,15 +3738,13 @@ struct nand_flash_dev *nand_get_flash_type(struct mtd_info *mtd,
 	/* Read entire ID string */
 	for (i = 0; i < 8; i++)
 		id_data[i] = chip->read_byte(mtd);
-
+	
 	if (id_data[0] != *maf_id || id_data[1] != *dev_id) {
 		pr_info("second ID read did not match %02x,%02x against %02x,%02x\n",
 			*maf_id, *dev_id, id_data[0], id_data[1]);
 		return ERR_PTR(-ENODEV);
 	}
 
-		pr_info("YYS %s second ID read did not match %02x,%02x against %02x,%02x\n",
-			__func__, *maf_id, *dev_id, id_data[0], id_data[1]);
 	if (!type)
 		type = nand_flash_ids;
 
