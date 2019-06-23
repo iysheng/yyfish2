@@ -17,12 +17,6 @@ static void stm32xx_nand_cmd_ctrl(struct mtd_info *mtd, int cmd, unsigned int ct
 	
 	debug("ctrl: 0x%08x, cmd: 0x%08x\n", ctrl, cmd);
 
-#if 0
-	if (ctrl & NAND_NCE)
-		//setbits_le32(&stm32xx_nand_slc_regs->cfg, CFG_CE_LOW);
-	else
-		//clrbits_le32(&stm32xx_nand_slc_regs->cfg, CFG_CE_LOW);
-#endif
 	if (cmd == NAND_CMD_NONE)
 		return;
 
@@ -46,7 +40,7 @@ static uint8_t stm32xx_read_byte(struct mtd_info *mtd)
 
 static void stm32xx_write_byte(struct mtd_info *mtd, uint8_t byte)
 {
-	writel(byte, 0x80000000);
+	writeb(byte, 0x80000000);
 }
 
 static void stm32xx_read_buf(struct mtd_info *mtd, uint8_t *buf, int len)
@@ -58,7 +52,7 @@ static void stm32xx_read_buf(struct mtd_info *mtd, uint8_t *buf, int len)
 static void stm32xx_write_buf(struct mtd_info *mtd, const uint8_t *buf, int len)
 {
 	while (len-- > 0)
-		writel(*buf++, 0x80000000);
+		writeb(*buf++, 0x80000000);
 }
 
 static void stm32xx_nand_init(void)
