@@ -794,7 +794,7 @@ static void nand_command_lp(struct mtd_info *mtd, unsigned int command,
 	 * Apply this short delay always to ensure that we do wait tWB in
 	 * any case on any machine.
 	 */
-	udelay(100);
+	ndelay(100);
 
 	nand_wait_ready(mtd);
 }

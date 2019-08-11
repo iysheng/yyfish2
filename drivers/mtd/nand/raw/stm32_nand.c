@@ -21,8 +21,6 @@ static void stm32xx_nand_cmd_ctrl(struct mtd_info *mtd, int cmd, unsigned int ct
 {
 	if (cmd == NAND_CMD_NONE)
 		return;
-	if (*(char *)0xc0500000 == 0x12)
-	debug("ctrl: 0x%08x, cmd: 0x%08x\n", ctrl, cmd);
 
 	if (ctrl & NAND_CLE)
 		writeb(cmd & 0xFF, 0x80010000);
