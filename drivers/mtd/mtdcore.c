@@ -1059,6 +1059,7 @@ int mtd_read_oob(struct mtd_info *mtd, loff_t from, struct mtd_oob_ops *ops)
 		return -EOPNOTSUPP;
 
 	if (mtd->_read_oob)
+		/* 优先回调 mtd 的 _read_oob 函数 */
 		ret_code = mtd->_read_oob(mtd, from, ops);
 	else
 		ret_code = mtd->_read(mtd, from, ops->len, &ops->retlen,

@@ -309,7 +309,7 @@ static void nand_print_and_set_info(int idx)
 	env_set_hex("nand_oobsize", mtd->oobsize);
 	env_set_hex("nand_erasesize", mtd->erasesize);
 }
-
+/* 直接读取 flash 的数据 */
 static int raw_access(struct mtd_info *mtd, ulong addr, loff_t off,
 		      ulong count, int read, int no_verify)
 {
@@ -542,7 +542,7 @@ static int do_nand(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])
 
 		return ret == 0 ? 1 : 0;
 	}
-
+        /* 如果是读写指令 */
 	if (strncmp(cmd, "read", 4) == 0 || strncmp(cmd, "write", 5) == 0) {
 		size_t rwsize;
 		ulong pagecount = 1;
@@ -559,7 +559,7 @@ static int do_nand(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])
 		printf("\nNAND %s: ", read ? "read" : "write");
 
 		s = strchr(cmd, '.');
-
+                /* 如果是要读取原始 flash 的数据 */
 		if (s && !strncmp(s, ".raw", 4)) {
 			raw = 1;
 
@@ -573,7 +573,7 @@ static int do_nand(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])
 
 			if (set_dev(dev))
 				return 1;
-
+                        /* 计算 mtd */
 			mtd = get_nand_dev_by_index(dev);
 
 			if (argc > 4 && !str2long(argv[4], &pagecount)) {
@@ -585,7 +585,7 @@ static int do_nand(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])
 				puts("Size exceeds partition or device limit\n");
 				return -1;
 			}
-
+                        /* 计算要读写的数据大小 */
 			rwsize = pagecount * (mtd->writesize + mtd->oobsize);
 		} else {
 			if (mtd_arg_off_size(argc - 3, argv + 3, &dev, &off,
@@ -608,6 +608,7 @@ static int do_nand(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])
 		if (!s || !strcmp(s, ".jffs2") ||
 		    !strcmp(s, ".e") || !strcmp(s, ".i")) {
 			if (read)
+				/* 一般的 nand read 命令会执行到这里 */
 				ret = nand_read_skip_bad(mtd, off, &rwsize,
 							 NULL, maxsize,
 							 (u_char *)addr);
@@ -627,6 +628,7 @@ static int do_nand(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])
 						WITH_DROP_FFS | WITH_WR_VERIFY);
 #endif
 		} else if (!strcmp(s, ".oob")) {
+			/* 读取 oob 区域 */
 			/* out-of-band data */
 			mtd_oob_ops_t ops = {
 				.oobbuf = (u8 *)addr,
@@ -639,6 +641,7 @@ static int do_nand(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])
 			else
 				ret = mtd_write_oob(mtd, off, &ops);
 		} else if (raw) {
+			/* 以 raw 方式访问 nand */
 			ret = raw_access(mtd, addr, off, pagecount, read,
 					 no_verify);
 		} else {

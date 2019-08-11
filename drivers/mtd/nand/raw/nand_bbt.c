@@ -501,6 +501,7 @@ static int create_bbt(struct mtd_info *mtd, uint8_t *buf,
 
 		from += (1 << this->bbt_erase_shift);
 	}
+	pr_info("badblockcounts=%d\n", mtd->ecc_stats.badblocks);
 	return 0;
 }
 
@@ -815,6 +816,7 @@ static int write_bbt(struct mtd_info *mtd, uint8_t *buf,
  * The function creates a memory based bbt by scanning the device for
  * manufacturer / software marked good / bad blocks.
  */
+/* 创建一个保存在内存的怀块表 */
 static inline int nand_memory_bbt(struct mtd_info *mtd, struct nand_bbt_descr *bd)
 {
 	struct nand_chip *this = mtd_to_nand(mtd);
@@ -1075,14 +1077,15 @@ static int nand_scan_bbt(struct mtd_info *mtd, struct nand_bbt_descr *bd)
 	struct nand_chip *this = mtd_to_nand(mtd);
 	int len, res;
 	uint8_t *buf;
-	struct nand_bbt_descr *td = this->bbt_td;
-	struct nand_bbt_descr *md = this->bbt_md;
+	struct nand_bbt_descr *td = this->bbt_td; /* 描述坏块表的指针，这个坏块表对应的是存储在 flash 的坏块表 */
+	struct nand_bbt_descr *md = this->bbt_md; /* 坏快表指针的镜像 */
 
 	len = (mtd->size >> (this->bbt_erase_shift + 2)) ? : 1;
 	/*
 	 * Allocate memory (2bit per block) and clear the memory bad block
 	 * table.
 	 */
+	/* 申请坏块表的内存空间 */
 	this->bbt = kzalloc(len, GFP_KERNEL);
 	if (!this->bbt)
 		return -ENOMEM;
