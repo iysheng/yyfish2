@@ -64,7 +64,7 @@ static struct nand_ecclayout nand_oob_16 = {
 		{.offset = 8,
 		 . length = 8} }
 };
-
+/* 选择了这个 ecc 布局 */
 static struct nand_ecclayout nand_oob_64 = {
 	.eccbytes = 24,
 	.eccpos = {
@@ -368,7 +368,7 @@ static int nand_block_bad(struct mtd_info *mtd, loff_t ofs)
 					page);
 			bad = chip->read_byte(mtd);
 		}
-
+		/* 不是全 0xff 说明就是坏块 */
 		if (likely(chip->badblockbits == 8))
 			res = bad != 0xFF;
 		else
@@ -523,10 +523,10 @@ static int nand_block_isreserved(struct mtd_info *mtd, loff_t ofs)
 static int nand_block_checkbad(struct mtd_info *mtd, loff_t ofs, int allowbbt)
 {
 	struct nand_chip *chip = mtd_to_nand(mtd);
-
 	if (!(chip->options & NAND_SKIP_BBTSCAN) &&
 	    !(chip->options & NAND_BBT_SCANNED)) {
 		chip->options |= NAND_BBT_SCANNED;
+		/* 创建坏块表 */
 		chip->scan_bbt(mtd);
 	}
 
@@ -534,6 +534,7 @@ static int nand_block_checkbad(struct mtd_info *mtd, loff_t ofs, int allowbbt)
 		return chip->block_bad(mtd, ofs);
 
 	/* Return info from the table */
+	/* 从坏快表中解析是否是坏快 */
 	return nand_isbad_bbt(mtd, ofs, allowbbt);
 }
 
@@ -701,7 +702,6 @@ static void nand_command_lp(struct mtd_info *mtd, unsigned int command,
 			    int column, int page_addr)
 {
 	register struct nand_chip *chip = mtd_to_nand(mtd);
-
 	/* Emulate NAND_CMD_READOOB */
 	if (command == NAND_CMD_READOOB) {
 		column += mtd->writesize;
@@ -1260,7 +1260,7 @@ static int nand_read_page_raw_syndrome(struct mtd_info *mtd,
 			oob += chip->ecc.postpad;
 		}
 	}
-
+	/* 读取 oob 区域的剩余数据 */
 	size = mtd->oobsize - (oob - chip->oob_poi);
 	if (size)
 		chip->read_buf(mtd, oob, size);
@@ -1744,10 +1744,11 @@ read_retry:
 			 * Now read the page into the buffer.  Absent an error,
 			 * the read methods return max bitflips per ecc step.
 			 */
-			if (unlikely(ops->mode == MTD_OPS_RAW))
+			if (unlikely(ops->mode == MTD_OPS_RAW)) {
 				ret = chip->ecc.read_page_raw(mtd, chip, bufpoi,
 							      oob_required,
 							      page);
+			}
 			else if (!aligned && NAND_HAS_SUBPAGE_READ(chip) &&
 				 !oob)
 				ret = chip->ecc.read_subpage(mtd, chip,
@@ -2131,6 +2132,7 @@ static int nand_read_oob(struct mtd_info *mtd, loff_t from,
 	if (!ops->datbuf)
 		ret = nand_do_read_oob(mtd, from, ops);
 	else
+		/* 优先回调该函数 */
 		ret = nand_do_read_ops(mtd, from, ops);
 
 out:
@@ -2419,7 +2421,6 @@ static int nand_write_page(struct mtd_info *mtd, struct nand_chip *chip,
 
 	if (nand_standard_page_accessors(&chip->ecc)) {
 		chip->cmdfunc(mtd, NAND_CMD_PAGEPROG, -1, -1);
-
 		status = chip->waitfunc(mtd, chip);
 		if (status & NAND_STATUS_FAIL)
 			return -EIO;
@@ -2503,7 +2504,7 @@ static int nand_do_write_ops(struct mtd_info *mtd, loff_t to,
 
 	uint32_t oobwritelen = ops->ooblen;
 	uint32_t oobmaxlen = mtd_oobavail(mtd, ops);
-
+	/* nand write 命令 oob == NULL */
 	uint8_t *oob = ops->oobbuf;
 	uint8_t *buf = ops->datbuf;
 	int ret;
@@ -3026,6 +3027,7 @@ static int nand_onfi_get_features(struct mtd_info *mtd, struct nand_chip *chip,
 }
 
 /* Set default functions */
+/* 初始化 chip */
 static void nand_set_defaults(struct nand_chip *chip, int busw)
 {
 	/* check for proper chip_delay setup, set 20us if not */
@@ -3034,8 +3036,7 @@ static void nand_set_defaults(struct nand_chip *chip, int busw)
 
 	/* check, if a user supplied command function given */
 	if (chip->cmdfunc == NULL)
-		chip->cmdfunc = nand_command;
-
+		chip->cmdfunc = nand_command; /* nand 发送命令的函数 */
 	/* check, if a user supplied wait function given */
 	if (chip->waitfunc == NULL)
 		chip->waitfunc = nand_wait;
@@ -3054,6 +3055,7 @@ static void nand_set_defaults(struct nand_chip *chip, int busw)
 		chip->read_byte = busw ? nand_read_byte16 : nand_read_byte;
 	if (!chip->read_word)
 		chip->read_word = nand_read_word;
+	/* 检查是否是坏块的成员函数 */
 	if (!chip->block_bad)
 		chip->block_bad = nand_block_bad;
 	if (!chip->block_markbad)
@@ -3065,7 +3067,7 @@ static void nand_set_defaults(struct nand_chip *chip, int busw)
 	if (!chip->read_buf || chip->read_buf == nand_read_buf)
 		chip->read_buf = busw ? nand_read_buf16 : nand_read_buf;
 	if (!chip->scan_bbt)
-		chip->scan_bbt = nand_default_bbt;
+		chip->scan_bbt = nand_default_bbt; /* 创建 badblock 分区 */
 
 	if (!chip->controller) {
 		chip->controller = &chip->hwcontrol;
@@ -3773,7 +3775,7 @@ struct nand_flash_dev *nand_get_flash_type(struct mtd_info *mtd,
 
 	if (!mtd->name)
 		mtd->name = type->name;
-
+	/* 获得 chipsize */
 	chip->chipsize = (uint64_t)type->chipsize << 20;
 
 	if (!type->pagesize) {
@@ -3841,7 +3843,7 @@ ident_done:
 
 	/* Do not replace user supplied command function! */
 	if (mtd->writesize > 512 && chip->cmdfunc == nand_command)
-		chip->cmdfunc = nand_command_lp;
+		chip->cmdfunc = nand_command_lp; /* 替换了 nand_command */
 
 	pr_info("device found, Manufacturer ID: 0x%02x, Chip ID: 0x%02x\n",
 		*maf_id, *dev_id);
@@ -4479,11 +4481,12 @@ int nand_scan_tail(struct mtd_info *mtd)
 		break;
 
 	case NAND_ECC_NONE:
+		/* 无 ECC 校验时执行的回调函数 */
 		pr_warn("NAND_ECC_NONE selected by board driver. This is not recommended!\n");
 		ecc->read_page = nand_read_page_raw;
 		ecc->write_page = nand_write_page_raw;
 		ecc->read_oob = nand_read_oob_std;
-		ecc->read_page_raw = nand_read_page_raw;
+		ecc->read_page_raw = nand_read_page_raw; /* raw 获取 nand 数据回调该函数 */
 		ecc->write_page_raw = nand_write_page_raw;
 		ecc->write_oob = nand_write_oob_std;
 		ecc->size = mtd->writesize;
@@ -4567,7 +4570,7 @@ int nand_scan_tail(struct mtd_info *mtd)
 						MTD_CAP_NANDFLASH;
 	mtd->_erase = nand_erase;
 	mtd->_panic_write = panic_nand_write;
-	mtd->_read_oob = nand_read_oob;
+	mtd->_read_oob = nand_read_oob;	/* raw 读取 flash 的数据时，优先回调该函数 */
 	mtd->_write_oob = nand_write_oob;
 	mtd->_sync = nand_sync;
 	mtd->_lock = NULL;

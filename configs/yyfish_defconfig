@@ -228,7 +228,7 @@ CONFIG_BOOTSTAGE_STASH_SIZE=0x1000
 # CONFIG_SPI_BOOT is not set
 CONFIG_BOOTDELAY=3
 CONFIG_USE_BOOTARGS=y
-CONFIG_BOOTARGS="console=ttyS0,115200 earlyprintk consoleblank=0 ignore_loglevel"
+CONFIG_BOOTARGS="console=ttySTM0,115200 earlyprintk consoleblank=0 ignore_loglevel"
 # CONFIG_USE_BOOTCOMMAND is not set
 
 #
@@ -236,8 +236,8 @@ CONFIG_BOOTARGS="console=ttyS0,115200 earlyprintk consoleblank=0 ignore_loglevel
 #
 # CONFIG_CONSOLE_RECORD is not set
 # CONFIG_DISABLE_CONSOLE is not set
-CONFIG_LOGLEVEL=4
-CONFIG_SPL_LOGLEVEL=4
+CONFIG_LOGLEVEL=7
+CONFIG_SPL_LOGLEVEL=7
 # CONFIG_SILENT_CONSOLE is not set
 # CONFIG_PRE_CONSOLE_BUFFER is not set
 CONFIG_CONSOLE_MUX=y

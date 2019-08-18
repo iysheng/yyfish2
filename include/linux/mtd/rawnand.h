@@ -929,7 +929,7 @@ struct nand_chip {
 	uint16_t ecc_strength_ds;
 	uint16_t ecc_step_ds;
 	int onfi_timing_mode_default;
-	int badblockpos;
+	int badblockpos; /* == NAND_LARGE_BADBLOCK_POS == 0 */
 	int badblockbits;
 
 	int onfi_version;
@@ -943,7 +943,7 @@ struct nand_chip {
 
 	flstate_t state;
 
-	uint8_t *oob_poi;
+	uint8_t *oob_poi; /* oob 区域的缓冲区首地址 */
 	struct nand_hw_control *controller;
 	struct nand_ecclayout *ecclayout;
 
@@ -953,6 +953,7 @@ struct nand_chip {
 	struct nand_hw_control hwcontrol;
 
 	uint8_t *bbt;
+	/* 描述存储在 flash 的坏块表 */
 	struct nand_bbt_descr *bbt_td;
 	struct nand_bbt_descr *bbt_md;
 

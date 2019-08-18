@@ -626,6 +626,35 @@ int initr_mem(void)
 	return 0;
 }
 #endif
+#define MEM_TEST_BEGIN	0x80020000
+#define MEM_TEST_END	0x80022040
+int test_mem(void)
+{
+    int i, j, err_count = 0;;
+    int data[2] = {0x5a5a5a5a, 0xa5a5a5a5};
+
+    for (i = MEM_TEST_BEGIN; i < MEM_TEST_END; i += 32)
+    {
+	    *(int *)i = data[i / 32 % 2];
+    }
+
+    for (i = MEM_TEST_BEGIN; i < MEM_TEST_END; i += 32)
+    {
+	    j = *(int *)i;
+	    if (j != data[i / 32 % 2])
+	    {
+		    err_count++;
+		    printf("mem err add=%#x data=%#x but should %#x\n", i, j, data[i / 32 % 2]);
+	    }
+	    else
+		    continue;
+    }
+
+    printf("mem test %s\n", err_count ? "failed" : "success");
+
+    return 0;
+}
+
 
 #ifdef CONFIG_CMD_BEDBUG
 static int initr_bedbug(void)
@@ -845,6 +874,9 @@ static init_fnc_t init_sequence_r[] = {
 #endif
 #if defined(CONFIG_PRAM)
 	initr_mem,
+#endif
+#if 0
+	test_mem, /* YYS 添加这段代码测试 DDR */
 #endif
 	run_main_loop,
 };

@@ -51,9 +51,10 @@
 	"run bootcmd_romfs"
 
 #define CONFIG_EXTRA_ENV_SETTINGS \
-	"bootargs_romfs=uclinux.physaddr=0x08180000 root=/dev/mtdblock0\0" \
+	"bootargs_romfs=console=ttySTM0,115200\0" \
 	"bootcmd_romfs=setenv bootargs ${bootargs} ${bootargs_romfs};" \
-	"bootm 0x08044000 - 0x08042000\0"
+	"fatload mmc 0 0xc1000000 uImage;fatload mmc 0 0xc0800000 yyfish.dtb;" \
+	"bootm 0xc1000000 - 0xc0800000\0"
 
 
 /*

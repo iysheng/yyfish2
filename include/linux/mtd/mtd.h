@@ -246,6 +246,7 @@ struct mtd_info {
 		       size_t *retlen, const u_char *buf);
 	int (*_panic_write) (struct mtd_info *mtd, loff_t to, size_t len,
 			     size_t *retlen, const u_char *buf);
+	/* 可以读取 oob 区域的成员函数 */
 	int (*_read_oob) (struct mtd_info *mtd, loff_t from,
 			  struct mtd_oob_ops *ops);
 	int (*_write_oob) (struct mtd_info *mtd, loff_t to,

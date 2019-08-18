@@ -615,8 +615,9 @@ int nand_write_skip_bad(struct mtd_info *mtd, loff_t offset, size_t *length,
 		*length = 0;
 		return -EFBIG;
 	}
-
+	/* 不需要跳过坏块 */
 	if (!need_skip && !(flags & WITH_DROP_FFS)) {
+		/* 感觉会走到这里 */
 		rval = nand_write(mtd, offset, length, buffer);
 
 		if ((flags & WITH_WR_VERIFY) && !rval)
@@ -735,7 +736,7 @@ int nand_read_skip_bad(struct mtd_info *mtd, loff_t offset, size_t *length,
 		*length = 0;
 		return -EFBIG;
 	}
-
+	/* 如果没有坏块 */
 	if (!need_skip) {
 		rval = nand_read(mtd, offset, length, buffer);
 		if (!rval || rval == -EUCLEAN)
