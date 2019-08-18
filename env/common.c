@@ -236,7 +236,7 @@ void env_relocate(void)
 		set_default_env("bad CRC", 0);
 #endif
 	} else {
-		env_load();
+		env_load(); /* get here i guess */
 	}
 }
 

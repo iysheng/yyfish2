@@ -437,6 +437,7 @@ static int initr_mmc(void)
 static int should_load_env(void)
 {
 #ifdef CONFIG_OF_CONTROL
+	/* return 1 */
 	return fdtdec_get_config_int(gd->fdt_blob, "load-environment", 1);
 #elif defined CONFIG_DELAY_ENVIRONMENT
 	return 0;
@@ -755,6 +756,7 @@ static init_fnc_t init_sequence_r[] = {
 #ifdef CONFIG_MMC
 	initr_mmc,
 #endif
+	/* init enviroment here,do more */
 	initr_env,
 #ifdef CONFIG_SYS_BOOTPARAMS_LEN
 	initr_malloc_bootparams,

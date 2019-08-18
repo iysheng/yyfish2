@@ -18,6 +18,7 @@ DECLARE_GLOBAL_DATA_PTR;
  * Because we only ever have the default environment available we must mark
  * it as invalid.
  */
+/* use env in default */
 static int env_nowhere_init(void)
 {
 	gd->env_addr	= (ulong)&default_environment[0];

@@ -5,6 +5,7 @@ BUILD_CPU_COUNT=`expr $CPU_COUNT / 2`
 
 ARCH_PLATFORM=arm
 CROSS_TOOLCHAIN=arm-none-eabi-
+#CROSS_TOOLCHAIN=arm-linux-
 
 usage() {
 	echo "
@@ -19,7 +20,7 @@ do_build() {
 	case $1 in
 		*config) make ARCH=$ARCH_PLATFORM CROSS_COMPILE=$CROSS_TOOLCHAIN menuconfig;;
 		default) make ARCH=$ARCH_PLATFORM CROSS_COMPILE=$CROSS_TOOLCHAIN ;;
-		openocd) sudo openocd -s /usr/local/share/openocd/scripts/ -f board/yyfish.cfg ;;
+		openocd) sudo openocd -s /usr/share/openocd/scripts/ -f board/yyfish.cfg ;;
 		telnet) telnet localhost 4444 ;;
 		*)usage ;;
 	esac

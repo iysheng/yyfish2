@@ -66,7 +66,6 @@ static int env_nand_init(void)
 #if defined(ENV_IS_EMBEDDED) || defined(CONFIG_NAND_ENV_DST)
 	int crc1_ok = 0, crc2_ok = 0;
 	env_t *tmp_env1;
-
 #ifdef CONFIG_ENV_OFFSET_REDUND
 	env_t *tmp_env2;
 
@@ -111,6 +110,7 @@ static int env_nand_init(void)
 	gd->env_addr = (ulong)env_ptr->data;
 
 #else /* ENV_IS_EMBEDDED || CONFIG_NAND_ENV_DST */
+	/* get here */
 	gd->env_addr	= (ulong)&default_environment[0];
 	gd->env_valid	= ENV_VALID;
 #endif /* ENV_IS_EMBEDDED || CONFIG_NAND_ENV_DST */
@@ -312,7 +312,7 @@ int get_nand_env_oob(struct mtd_info *mtd, unsigned long *result)
 	return 0;
 }
 #endif
-
+/* no define this macro, no backup of enviroment */
 #ifdef CONFIG_ENV_OFFSET_REDUND
 static int env_nand_load(void)
 {
@@ -355,7 +355,7 @@ static int env_nand_load(void)
 {
 #if !defined(ENV_IS_EMBEDDED)
 	int ret;
-	ALLOC_CACHE_ALIGN_BUFFER(char, buf, CONFIG_ENV_SIZE);
+	ALLOC_CACHE_ALIGN_BUFFER(char, buf, CONFIG_ENV_SIZE); /* default size == 8KB */
 
 #if defined(CONFIG_ENV_OFFSET_OOB)
 	struct mtd_info *mtd  = get_nand_dev_by_index(0);
@@ -370,7 +370,7 @@ static int env_nand_load(void)
 		return;
 	}
 #endif
-
+	/* read env data from nand by offset */
 	ret = readenv(CONFIG_ENV_OFFSET, (u_char *)buf);
 	if (ret) {
 		set_default_env("readenv() failed", 0);
@@ -383,7 +383,7 @@ static int env_nand_load(void)
 	return 0;
 }
 #endif /* CONFIG_ENV_OFFSET_REDUND */
-
+/* env driver of env in nand */
 U_BOOT_ENV_LOCATION(nand) = {
 	.location	= ENVL_NAND,
 	ENV_NAME("NAND")

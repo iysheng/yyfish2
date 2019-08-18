@@ -3,7 +3,6 @@
  * Copyright (C) 2017 Google, Inc
  * Written by Simon Glass <sjg@chromium.org>
  */
-
 #include <common.h>
 #include <environment.h>
 
@@ -246,7 +245,7 @@ int env_init(void)
 
 	for (prio = 0; (drv = env_driver_lookup(ENVOP_INIT, prio)); prio++) {
 		if (!drv->init || !(ret = drv->init()))
-			env_set_inited(drv->location);
+			env_set_inited(drv->location); /* mark init success */
 
 		debug("%s: Environment %s init done (ret=%d)\n", __func__,
 		      drv->name, ret);
