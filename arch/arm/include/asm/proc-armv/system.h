@@ -65,8 +65,14 @@
 	: "memory");						\
 	})
 
-#else	/* CONFIG_ARM64 */
-
+#else
+#if defined(CONFIG_CPU_V7M)
+static inline void local_irq_save(
+	unsigned long flags __attribute__((unused)))
+{
+	__asm__ __volatile__ ("" : : : "memory");
+}
+#else
 #define local_irq_save(x)					\
 	({							\
 		unsigned long temp;				\
@@ -78,7 +84,7 @@
 	:							\
 	: "memory");						\
 	})
-
+#endif
 /*
  * Enable IRQs
  */
@@ -154,13 +160,20 @@
 /*
  * restore saved IRQ & FIQ state
  */
+#if defined(CONFIG_CPU_V7M)
+static inline void local_irq_restore(
+	unsigned long flags __attribute__((unused)))
+{
+	__asm__ __volatile__ ("" : : : "memory");
+}
+#else
 #define local_irq_restore(x)					\
 	__asm__ __volatile__(					\
 	"msr	cpsr_c, %0		@ local_irq_restore\n"	\
 	:							\
 	: "r" (x)						\
 	: "memory")
-
+#endif
 #endif	/* CONFIG_ARM64 */
 
 #if defined(CONFIG_CPU_SA1100) || defined(CONFIG_CPU_SA110) || \
