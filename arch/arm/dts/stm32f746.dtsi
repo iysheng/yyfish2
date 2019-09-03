@@ -68,6 +68,7 @@
 			clocks = <&rcc 0 STM32F7_AHB1_CLOCK(ETHMAC)>,
 				 <&rcc 0 STM32F7_AHB1_CLOCK(ETHMACTX)>,
 				 <&rcc 0 STM32F7_AHB1_CLOCK(ETHMACRX)>;
+			resets = <&rcc STM32F7_APB2_RESET(MDIO)>;
 			interrupts = <61>, <62>;
 			interrupt-names = "macirq", "eth_wake_irq";
 			snps,pbl = <8>;

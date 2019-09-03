@@ -266,13 +266,13 @@
 	pinctrl-0 = <&ethernet_mii>;
 	phy-mode = "rmii";
 	phy-handle = <&phy0>;
+	max-speed = <10>;
     snps,reset-gpio = <&gpiof 9 1>; /*PF9<-->ETH_RESET*/
     snps,reset-active-low;
     snps,reset-delays-us = <100000 100000 100000>;
     snps,mixed-burst;
     snps,multicast-filter-bins = <256>;
     snps,perfect-filter-entries = <128>;
-    
 	mdio0 {
 		#address-cells = <1>;
 		#size-cells = <0>;
